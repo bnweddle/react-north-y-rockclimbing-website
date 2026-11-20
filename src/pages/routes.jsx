@@ -96,19 +96,20 @@ export default function RoutesPage({ isPast = false }) {
   const [wall, setWall] = useState("")
   const [grade, setGrade] = useState("")
   const [showBackToTop, setShowBackToTop] = useState(false)
-  const routeListRef = useRef(null)
+  const scrollRegionRef = useRef(null)
 
   function changeFilter(setFilter, value) {
     setFilter(value)
+    scrollRegionRef.current?.scrollTo({ top: 0, behavior: "instant" })
     setShowBackToTop(false)
   }
 
   function scrollToTop() {
-    const list = routeListRef.current
-    if (!list) return
+    const region = scrollRegionRef.current
+    if (!region) return
 
-    list.focus({ preventScroll: true })
-    list.scrollTo({
+    region.focus({ preventScroll: true })
+    region.scrollTo({
       top: 0,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
     })
@@ -188,43 +189,42 @@ export default function RoutesPage({ isPast = false }) {
   }, [routes])
 
   return (
-    <div className="info-page relative flex min-h-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8 md:py-8">
-      <header className="flex shrink-0 flex-wrap items-end justify-between gap-4 text-left">
-        <div className="space-y-1">
-          <h1 className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{isPast ? "Past Routes" : "Routes"}</h1>
-          <p className="text-sm text-muted-foreground">
-            {isPast ? "Explore previously removed routes." : "Explore the routes currently on the wall."}
-          </p>
-        </div>
-        <a className={buttonVariants({ variant: "outline", size: "lg" })} href={isPast ? "/routes" : "/routes/past"}>
-          {isPast ? "Active Routes" : "Past Routes"}
-        </a>
-      </header>
-      <div role="group" aria-label="Route filters" className="flex shrink-0 flex-wrap gap-2">
-        <RouteFilter label="Sort" value={sortOrder} onChange={(value) => changeFilter(setSortOrder, value)}>
-          {!isPast && <option value="">Sort: Wall order</option>}
-          <option value="newest">{isPast ? "Sort: Most recently removed" : "Sort: Newest first"}</option>
-          <option value="oldest">{isPast ? "Sort: Oldest removed first" : "Sort: Oldest first"}</option>
-          <option value="easiest">Sort: Easiest first</option>
-          <option value="hardest">Sort: Hardest first</option>
-        </RouteFilter>
-        <RouteFilter label="Wall" value={wall} onChange={(value) => changeFilter(setWall, value)}>
-          <option value="">All walls</option>
-          {walls.map((value) => <option key={value} value={value}>Wall #{value}</option>)}
-        </RouteFilter>
-        <RouteFilter label="Route grade" value={grade} onChange={(value) => changeFilter(setGrade, value)}>
-          <option value="">All grades</option>
-          {grades.map((value) => <option key={value} value={value}>{value}</option>)}
-        </RouteFilter>
-      </div>
+    <div className="relative flex min-h-0 flex-1 flex-col">
       <section
-        key={JSON.stringify([sortOrder, wall, grade])}
-        ref={routeListRef}
-        className="relative min-h-0 min-w-0 flex-1 overflow-y-auto scrollbar-none"
-        aria-label="Routes"
+        ref={scrollRegionRef}
+        className="info-page relative flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-6 scrollbar-none md:px-8 md:py-8"
+        aria-labelledby="routes-title"
         tabIndex={0}
         onScroll={(event) => setShowBackToTop(event.currentTarget.scrollTop > 100)}
       >
+        <header className="flex shrink-0 flex-wrap items-end justify-between gap-4 text-left">
+          <div className="space-y-1">
+            <h1 id="routes-title" className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{isPast ? "Past Routes" : "Routes"}</h1>
+            <p className="text-sm text-muted-foreground">
+              {isPast ? "Explore previously removed routes." : "Explore the routes currently on the wall."}
+            </p>
+          </div>
+          <a className={buttonVariants({ variant: "outline", size: "lg" })} href={isPast ? "/routes" : "/routes/past"}>
+            {isPast ? "Active Routes" : "Past Routes"}
+          </a>
+        </header>
+        <div role="group" aria-label="Route filters" className="flex shrink-0 flex-wrap gap-2">
+          <RouteFilter label="Sort" value={sortOrder} onChange={(value) => changeFilter(setSortOrder, value)}>
+            {!isPast && <option value="">Sort: Wall order</option>}
+            <option value="newest">{isPast ? "Sort: Most recently removed" : "Sort: Newest first"}</option>
+            <option value="oldest">{isPast ? "Sort: Oldest removed first" : "Sort: Oldest first"}</option>
+            <option value="easiest">Sort: Easiest first</option>
+            <option value="hardest">Sort: Hardest first</option>
+          </RouteFilter>
+          <RouteFilter label="Wall" value={wall} onChange={(value) => changeFilter(setWall, value)}>
+            <option value="">All walls</option>
+            {walls.map((value) => <option key={value} value={value}>Wall #{value}</option>)}
+          </RouteFilter>
+          <RouteFilter label="Route grade" value={grade} onChange={(value) => changeFilter(setGrade, value)}>
+            <option value="">All grades</option>
+            {grades.map((value) => <option key={value} value={value}>{value}</option>)}
+          </RouteFilter>
+        </div>
         {noMatches && (
           <p role="status" className="p-4 text-center text-sm text-muted-foreground">
             No routes match these filters.
