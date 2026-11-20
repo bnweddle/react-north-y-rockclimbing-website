@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react'
-import { ChevronDownIcon, SparkleIcon, TriangleAlertIcon } from "lucide-react"
+import { useEffect, useRef, useState } from 'react'
+import { ArrowUpIcon, ChevronDownIcon, SparkleIcon, TriangleAlertIcon } from "lucide-react"
 import { FaSkullCrossbones } from "react-icons/fa6"
 import { Badge } from "@/components/ui/badge"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import formatDate, { getRouteAgeStatus } from "@/lib/formatDate"
 import { supabase } from "@/lib/supabaseClient"
+
 
 const routeAgeIcons = {
   new: { Icon: SparkleIcon, label: "New route" },
@@ -19,6 +14,7 @@ const routeAgeIcons = {
   overdue: { Icon: FaSkullCrossbones, label: "Route is more than a year old" },
 }
 
+// for making sure route grades are sorted in natural numeric order without case sensitivity
 const naturalOrder = new Intl.Collator("en", { numeric: true, sensitivity: "base" })
 
 function filterOptions(routes, field) {
@@ -46,9 +42,9 @@ function RouteFilter({ label, value, onChange, children }) {
   )
 }
 
-function compareRouteDates(a, b, order) {
-  const first = Date.parse(a.date_created)
-  const second = Date.parse(b.date_created)
+function compareRouteDates(a, b, order, dateField) {
+  const first = Date.parse(a[dateField])
+  const second = Date.parse(b[dateField])
 
   if (Number.isNaN(first)) return Number.isNaN(second) ? 0 : 1
   if (Number.isNaN(second)) return -1
@@ -66,12 +62,13 @@ function compareRouteGrades(a, b, order) {
     : naturalOrder.compare(second, first)
 }
 
-function RouteDateBadge({ date }) {
-  const indicator = routeAgeIcons[getRouteAgeStatus(date)]
+function RouteDateBadge({ date, isPast }) {
+  const indicator = isPast ? null : routeAgeIcons[getRouteAgeStatus(date)]
 
   return (
     <Badge variant="secondary" className="gap-2 text-lg [&>svg]:size-7! [&>svg.lucide]:stroke-[2.5]" style={{ fontFamily: "Bellfast" }}>
       {indicator && <indicator.Icon aria-hidden="true" />}
+      {isPast && <span className="font-sans text-sm">REMOVED</span>}
       <span className="relative top-[0.1em]">{formatDate(date)}</span>
       {indicator && <span className="sr-only">{indicator.label}</span>}
     </Badge>
@@ -93,11 +90,29 @@ function textColorStyle(value) {
   return { color: value }
 }
 
-export default function RoutesPage() {
+export default function RoutesPage({ isPast = false }) {
   const [routes, setRoutes] = useState([])
-  const [sortOrder, setSortOrder] = useState("")
+  const [sortOrder, setSortOrder] = useState(isPast ? "newest" : "")
   const [wall, setWall] = useState("")
   const [grade, setGrade] = useState("")
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const routeListRef = useRef(null)
+
+  function changeFilter(setFilter, value) {
+    setFilter(value)
+    setShowBackToTop(false)
+  }
+
+  function scrollToTop() {
+    const list = routeListRef.current
+    if (!list) return
+
+    list.focus({ preventScroll: true })
+    list.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    })
+  }
 
   const walls = filterOptions(routes, "wall")
   const grades = filterOptions(routes, "route_grade")
@@ -105,8 +120,14 @@ export default function RoutesPage() {
     (!wall || String(route.wall) === wall) &&
     (!grade || route.route_grade === grade)
   ))
+
   if (sortOrder === "newest" || sortOrder === "oldest") {
-    visibleRoutes.sort((a, b) => compareRouteDates(a, b, sortOrder))
+    visibleRoutes.sort((a, b) => compareRouteDates(
+      a,
+      b,
+      sortOrder,
+      isPast ? "date_to_remove" : "date_created",
+    ))
   } else if (sortOrder === "easiest" || sortOrder === "hardest") {
     visibleRoutes.sort((a, b) => compareRouteGrades(a, b, sortOrder))
   }
@@ -114,11 +135,20 @@ export default function RoutesPage() {
 
   useEffect(() => {
     async function getRoutes() {
-      const { data, error } = await supabase
+      let query = supabase
         .from('routes')
         .select()
         .order('wall', { ascending: true })
-        .order('date_created', { ascending: false })
+
+      query = isPast
+        ? query
+          .not('date_to_remove', 'is', null)
+          .order('date_to_remove', { ascending: false, nullsFirst: false })
+        : query
+          .is('date_to_remove', null)
+          .order('date_created', { ascending: false })
+
+      const { data, error } = await query
 
       if (error) {
         console.error(error)
@@ -129,7 +159,7 @@ export default function RoutesPage() {
     }
 
     getRoutes()
-  }, [])
+  }, [isPast])
 
   useEffect(() => {
     let active = true
@@ -158,45 +188,61 @@ export default function RoutesPage() {
   }, [routes])
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-2 p-3">
-      <div role="group" aria-label="Route filters" className="flex shrink-0 flex-wrap justify-center gap-2">
-        <RouteFilter label="Sort" value={sortOrder} onChange={setSortOrder}>
-          <option value="">Sort: Wall order</option>
-          <option value="newest">Sort: Newest first</option>
-          <option value="oldest">Sort: Oldest first</option>
+    <div className="info-page relative flex min-h-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8 md:py-8">
+      <header className="flex shrink-0 flex-wrap items-end justify-between gap-4 text-left">
+        <div className="space-y-1">
+          <h1 className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{isPast ? "Past Routes" : "Routes"}</h1>
+          <p className="text-sm text-muted-foreground">
+            {isPast ? "Explore previously removed routes." : "Explore the routes currently on the wall."}
+          </p>
+        </div>
+        <a className={buttonVariants({ variant: "outline", size: "lg" })} href={isPast ? "/routes" : "/routes/past"}>
+          {isPast ? "Active Routes" : "Past Routes"}
+        </a>
+      </header>
+      <div role="group" aria-label="Route filters" className="flex shrink-0 flex-wrap gap-2">
+        <RouteFilter label="Sort" value={sortOrder} onChange={(value) => changeFilter(setSortOrder, value)}>
+          {!isPast && <option value="">Sort: Wall order</option>}
+          <option value="newest">{isPast ? "Sort: Most recently removed" : "Sort: Newest first"}</option>
+          <option value="oldest">{isPast ? "Sort: Oldest removed first" : "Sort: Oldest first"}</option>
           <option value="easiest">Sort: Easiest first</option>
           <option value="hardest">Sort: Hardest first</option>
         </RouteFilter>
-        <RouteFilter label="Wall" value={wall} onChange={setWall}>
+        <RouteFilter label="Wall" value={wall} onChange={(value) => changeFilter(setWall, value)}>
           <option value="">All walls</option>
           {walls.map((value) => <option key={value} value={value}>Wall #{value}</option>)}
         </RouteFilter>
-        <RouteFilter label="Route grade" value={grade} onChange={setGrade}>
+        <RouteFilter label="Route grade" value={grade} onChange={(value) => changeFilter(setGrade, value)}>
           <option value="">All grades</option>
           {grades.map((value) => <option key={value} value={value}>{value}</option>)}
         </RouteFilter>
       </div>
-      <Carousel
+      <section
         key={JSON.stringify([sortOrder, wall, grade])}
-        opts={{ align: 'start' }}
-        orientation="vertical"
-        className="flex min-h-0 min-w-0 flex-1 flex-col gap-2"
+        ref={routeListRef}
+        className="relative min-h-0 min-w-0 flex-1 overflow-y-auto scrollbar-none"
         aria-label="Routes"
+        tabIndex={0}
+        onScroll={(event) => setShowBackToTop(event.currentTarget.scrollTop > 100)}
       >
         {noMatches && (
           <p role="status" className="p-4 text-center text-sm text-muted-foreground">
             No routes match these filters.
           </p>
         )}
-        <CarouselContent className="mt-0 h-full" viewportClassName="min-h-0 flex-1">
+
+        <div>
           {visibleRoutes.map((route) => (
-            <CarouselItem key={route.route_id} className="basis-auto pt-1">
+            <div key={route.route_id} className="pt-1">
               <div className="p-1">
                 <Card style={{ background: route.hold_color }}>
                   <CardContent className="@container">
                     <div className="mb-2 grid grid-cols-2 items-center gap-2 p-2 @min-[320px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
                       <div className="col-start-1 row-start-1 justify-self-start">
-                        <RouteDateBadge date={route.date_created} />
+                        <RouteDateBadge
+                          date={isPast ? route.date_to_remove : route.date_created}
+                          isPast={isPast}
+                        />
                       </div>
                       <Badge variant="secondary" className="col-span-2 row-start-2 justify-self-center text-lg @min-[320px]:col-span-1 @min-[320px]:col-start-2 @min-[320px]:row-start-1" style={{ fontFamily: "Bellfast" }}>
                         <span className="relative top-[0.1em]">{`WALL #${route.wall}`}</span>
@@ -222,14 +268,20 @@ export default function RoutesPage() {
                   </CardContent>
                 </Card>
               </div>
-            </CarouselItem>
+            </div>
           ))}
-        </CarouselContent>
-        <div className="flex shrink-0 justify-center gap-2" hidden={noMatches}>
-          <CarouselPrevious className="static size-11 translate-x-0" />
-          <CarouselNext className="static size-11 translate-x-0" />
         </div>
-      </Carousel>
+      </section>
+      {showBackToTop && (
+        <Button
+          type="button"
+          className="absolute right-5 bottom-5 z-1 h-11 cursor-pointer px-3 shadow-md"
+          onClick={scrollToTop}
+        >
+          <ArrowUpIcon aria-hidden="true" />
+          Back to top
+        </Button>
+      )}
     </div>
   )
 }

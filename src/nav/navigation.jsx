@@ -1,8 +1,6 @@
 // src/nav/navigation.jsx
 
-import {
-  Home,
-} from "lucide-react"
+import { CalendarDays, Home, Mountain } from "lucide-react"
 
 export const navItems = [
   {
@@ -10,4 +8,15 @@ export const navItems = [
     url: "/",
     icon: Home,
   },
+  {
+    title: "Classes",
+    url: "/classes",
+    icon: CalendarDays,
+  },
+  {
+    title: "Routes",
+    url: "/routes",
+    icon: Mountain,
+  },
+
 ]

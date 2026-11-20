@@ -1,7 +1,9 @@
 import './App.css'
 import { AppSidebar } from "@/nav/app-sidebar"
 import { MobileBottomNav } from "@/nav/mobile-bottom-nav"
+import HomePage from "@/pages/home"
 import RoutesPage from "@/pages/routes"
+import ClassesPage from "@/pages/classes"
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -9,6 +11,30 @@ import {
 
 function App() {
   const currentPath = window.location.pathname
+  const navigationPath = currentPath === "/routes/past" ? "/routes" : currentPath
+
+  let page
+  switch (currentPath) {
+    case "/":
+      page = <HomePage />
+      break
+    case "/routes":
+      page = <RoutesPage key="active-routes" />
+      break
+    case "/routes/past":
+      page = <RoutesPage key="past-routes" isPast />
+      break
+    case "/classes":
+      page = <ClassesPage />
+      break
+    default:
+      page = (
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
+          <h1>Page not found</h1>
+          <a className="underline" href="/">Go to Home</a>
+        </div>
+      )
+  }
 
   return (
     <SidebarProvider className="h-dvh">
@@ -21,11 +47,11 @@ function App() {
           <SidebarTrigger />
         </div>
 
-        {(currentPath === "/" || currentPath === "/routes") && <RoutesPage />}
+        {page}
       </main>
 
       <div className="md:hidden">
-        <MobileBottomNav currentPath={currentPath} />
+        <MobileBottomNav currentPath={navigationPath} />
       </div>
     </SidebarProvider>
   )

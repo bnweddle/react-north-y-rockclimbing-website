@@ -6,16 +6,18 @@ object path relative to that bucket. Choose text colors that contrast with the
 card background. If a font cannot be loaded, the browser uses its default font
 and the error is logged to the console.
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The app's main destinations are **Home** (`/`), **Routes** (`/routes`), and
+**Classes** (`/classes`). Past routes are at `/routes/past` and linked from the
+Routes page. Configure production hosting to serve `index.html` for app paths
+so direct links and refreshes work.
 
-The **Routes** item in the desktop sidebar and mobile bottom bar opens `/routes`,
-which renders [the Routes page](./src/pages/routes.jsx). That page owns the
-carousel, route data, and custom font loading. The carousel fits the available
-page height and keeps its controls above the mobile bottom bar. Use **Sort** to
-keep wall order or sort by set date (newest or oldest first) or climbing grade
-(easiest or hardest first). Sorting applies across walls and works with the
-wall and grade filters. Configure production hosting to serve
-`index.html` for app paths so direct links and refreshes work.
+The pages use the existing Supabase client. Ensure the existing `routes` table
+has a `date_to_remove` column; null values are active and populated values are
+shown under Past Routes. Apply the schema and row-level
+security SQL in [plan.md](./plan.md) before expecting Classes or Home News to
+load. The browser only reads these tables; manage class schedules and News
+through authorized Supabase Dashboard access. FAQ questions are displayed
+without answers until gym-approved responses are provided.
 
 ## Installing Bottom Navigation
 

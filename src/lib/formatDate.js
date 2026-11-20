@@ -30,7 +30,6 @@ function monthAnniversary(date, months) {
 export function getRouteAgeStatus(value, now = new Date()) {
   const date = toUtcCalendarDate(value)
   const today = toUtcCalendarDate(now)
-  if (!date || !today || date > today) return null
 
   if (today > monthAnniversary(date, 12)) return 'overdue'
   if (today >= monthAnniversary(date, 9)) return 'aging'

@@ -5,7 +5,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -25,7 +24,10 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
 
                     <SidebarMenuButton
-                    isActive={window.location.pathname === item.url}
+                    isActive={
+                      window.location.pathname === item.url ||
+                      (item.url === "/routes" && window.location.pathname.startsWith("/routes/"))
+                    }
                     render={<a href={item.url} />}
                     >
                     <item.icon />
