@@ -12,22 +12,22 @@ import { Separator } from "@/components/ui/separator"
 import { supabase } from "@/lib/supabaseClient"
 
 const faqQuestions = [
-  { question: "How can I get started?", answer: "Answer coming soon." },
-  { question: "Do I need to sign a waiver?", answer: "Answer coming soon." },
-  { question: "What gear do I need?", answer: "Answer coming soon." },
-  { question: "Where can I purchase gear?", answer: "Answer coming soon." },
-  { question: "When can I climb?", answer: "Answer coming soon." },
-  { question: "What type of classes are offered?", answer: "Answer coming soon." },
-  { question: "How do I sign up for classes?", answer: "Answer coming soon." },
-  { question: "Where else can I climb?", answer: "Answer coming soon." },
-  { question: "What should I climb?", answer: "Answer coming soon." },
-  { question: "What is a route?", answer: "Answer coming soon." },
-  { question: "What is the grading system?", answer: "Answer coming soon." },
-  { question: "What is an Auto Belay?", answer: "Answer coming soon." },
-  { question: "How do I get certified / re-certified?", answer: "Answer coming soon." },
-  { question: "What do I do if a hold spins?", answer: "Answer coming soon." },
-  { question: "Is there an age limit for climbing?", answer: "Answer coming soon." },
-  { question: "What is the climbing lingo I should be aware of?", answer: "Answer coming soon." },
+  { question: "How can I get started?", answer: "Start with coming to an Open Climb session. They are free and if you love it, sign up for a month class or a certification class to be able to come at your leisure." },
+  { question: "Do I need to sign a waiver?", answer: "Yes, you must sign a waiver for each calendar year for each participant who is climbing or belaying." },
+  { question: "What gear do I need?", answer: "The YMCA supplies all necessary climbing gear, including harnesses and gri-gri devices. Climbing shoes may be used that can be found in the cabinet drawers, though sizes are limited." },
+  { question: "Where can I purchase gear?", answer: "REI, Scheels, and Bliss have gear that can be purchased in-store. Black Diamond and Petz are popular and certified climbing brands." },
+  { question: "When can I climb?", answer: "Any time the YMCA is open. Though during classes the wall will be sufficiently more busy." },
+  { question: "What type of classes are offered?", answer: "Month classes, private classes, and certification classes. See the front desk or information sheet by the rock climbing wall for more information on pricing and availability." },
+  { question: "How do I sign up for classes?", answer: "At the front desk." },
+  { question: "Where else can I climb?", answer: "The North West YMCA also has a climbing wall. Bliss is a popular climbing gym though it is not affiliated with the YMCA. KCC (Klimbing Cliff Club) is another option, though it is geared towards more advanced climbers." },
+  { question: "What is a route?", answer: "A route is designated by a set color of rocks on the wall, and it has a specific grade as indicated by the route label." },
+  { question: "What is the grading system?", answer: "The grading system is for indicating the difficulty of using the set of specific colored rocks. The easiest routes will start at a 5.7, then 5.8, then 5.9, and then go up to a 5.10A, then 5.10B, and so forth." },
+  { question: "What should I climb?", answer: "If you are a beginner, I would start by rainbowing which means to use all the colors on a given wall to get to the top. Then start eliminating one color at a time, and then start at the easiest route and work up from there." },
+  { question: "What is an Auto Belay?", answer: "An auto belay is a device that automatically takes in slack as a climber ascends and controls the descent when the climber lets go or falls, commonly used when someone doesn't have a climbing buddy or someone to belay them." },
+  { question: "How do I get certified / re-certified?", answer: "You will have to sign up at the front desk for a class to be trained which are offered after the Open Climb dates on Saturdays. Re-certs are scheduled per staff availability." },
+  { question: "What do I do if a hold spins?", answer: "Put a note on the hold and/or inform a staff member so they can fix it." },
+  { question: "Is there an age limit for climbing?", answer: "Yes, climbers must be at least 4 years old to be belayed or use the auto-belay." },
+  { question: "What is the climbing lingo I should be aware of?", answer: "All terms can be googled to learn their context and meaning. The types of holds lingo to know would be crimps, jugs, slopers, pinches, pockets, and underclings. Climbing moves lingo includes dyno, flagging, mantling, heel hook, toe hook, matching, foot swapping, gastoning, and smeering. Other additional climbing lingo includes: beta, flash, onsight, etc." },
 ]
 
 const ruleGroups = [
