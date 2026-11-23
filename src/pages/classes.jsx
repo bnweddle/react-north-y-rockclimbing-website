@@ -134,14 +134,14 @@ export default function ClassesPage() {
   }, new Map())
 
   return (
-    <div className="info-page scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 py-6 text-left md:px-8 md:py-8">
+    <div className="info-page classes-page scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 py-6 text-left md:px-8 md:py-8">
       <div className="mx-auto flex max-w-4xl flex-col gap-6">
-        <header className="flex flex-wrap items-end justify-between gap-4">
+        <header className="page-header flex flex-wrap items-end justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Classes</h1>
+            <h1 className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl" style={{ fontFamily: "BiotripCapsBold" }}>Classes</h1>
             <p className="text-sm text-muted-foreground">Explore the monthly climbing schedule.</p>
           </div>
-          <div className="flex items-center gap-2 rounded-xl border bg-card p-1">
+          <div className="month-navigation flex items-center gap-2 rounded-xl border bg-card p-1">
             <Button
               type="button"
               variant="ghost"
@@ -166,10 +166,10 @@ export default function ClassesPage() {
         </header>
 
         <section aria-labelledby="open-climb-heading">
-          <Card>
+          <Card className="info-card">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <span className="rounded-lg bg-secondary p-2 text-secondary-foreground">
+                <span className="info-card-icon rounded-lg p-2">
                   <UsersIcon aria-hidden="true" className="size-5" />
                 </span>
                 <div>
@@ -198,10 +198,10 @@ export default function ClassesPage() {
         </section>
 
         <section aria-labelledby="month-classes-heading">
-          <Card>
+          <Card className="info-card">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <span className="rounded-lg bg-secondary p-2 text-secondary-foreground">
+                <span className="info-card-icon rounded-lg p-2">
                   <CalendarDaysIcon aria-hidden="true" className="size-5" />
                 </span>
                 <div>

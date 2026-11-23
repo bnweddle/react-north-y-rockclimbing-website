@@ -22,6 +22,7 @@ const faqQuestions = [
   { question: "Where else can I climb?", answer: "The North West YMCA also has a climbing wall. Bliss is a popular climbing gym though it is not affiliated with the YMCA. KCC (Klimbing Cliff Club) is another option, though it is geared towards more advanced climbers." },
   { question: "What is a route?", answer: "A route is designated by a set color of rocks on the wall, and it has a specific grade as indicated by the route label." },
   { question: "What is the grading system?", answer: "The grading system is for indicating the difficulty of using the set of specific colored rocks. The easiest routes will start at a 5.7, then 5.8, then 5.9, and then go up to a 5.10A, then 5.10B, and so forth." },
+  { question: "What are Nats?", answer: "Nats refer to the natural features of the climbing wall, such as holds that are part of the wall itself rather than added artificial holds." },
   { question: "What should I climb?", answer: "If you are a beginner, I would start by rainbowing which means to use all the colors on a given wall to get to the top. Then start eliminating one color at a time, and then start at the easiest route and work up from there." },
   { question: "What is an Auto Belay?", answer: "An auto belay is a device that automatically takes in slack as a climber ascends and controls the descent when the climber lets go or falls, commonly used when someone doesn't have a climbing buddy or someone to belay them." },
   { question: "How do I get certified / re-certified?", answer: "You will have to sign up at the front desk for a class to be trained which are offered after the Open Climb dates on Saturdays. Re-certs are scheduled per staff availability." },
@@ -112,10 +113,10 @@ function News() {
 
   return (
     <section aria-labelledby="news-heading">
-      <Card>
+      <Card className="info-card">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <span className="rounded-lg bg-secondary p-2 text-secondary-foreground">
+            <span className="info-card-icon rounded-lg p-2">
               <BellIcon aria-hidden="true" className="size-5" />
             </span>
             <div>
@@ -150,19 +151,19 @@ function News() {
 
 export default function HomePage() {
   return (
-    <div className="info-page scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 py-6 text-left md:px-8 md:py-8">
+    <div className="info-page home-page scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 py-6 text-left md:px-8 md:py-8">
       <div className="mx-auto flex max-w-4xl flex-col gap-6">
-        <header className="space-y-1">
-          <h1 className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Home</h1>
+        <header className="page-header space-y-1">
+          <h1 className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl" style={{ fontFamily: "BiotripCapsBold" }}>Home</h1>
           <p className="text-sm text-muted-foreground">Gym updates, rules, and frequently asked questions.</p>
         </header>
         <News />
 
         <section aria-labelledby="rules-heading">
-          <Card>
+          <Card className="info-card">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <span className="rounded-lg bg-secondary p-2 text-secondary-foreground">
+                <span className="info-card-icon rounded-lg p-2">
                   <ClipboardListIcon aria-hidden="true" className="size-5" />
                 </span>
                 <div>
@@ -190,10 +191,10 @@ export default function HomePage() {
         </section>
 
         <section aria-labelledby="faq-heading">
-          <Card>
+          <Card className="info-card">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <span className="rounded-lg bg-secondary p-2 text-secondary-foreground">
+                <span className="info-card-icon rounded-lg p-2">
                   <CircleHelpIcon aria-hidden="true" className="size-5" />
                 </span>
                 <div>

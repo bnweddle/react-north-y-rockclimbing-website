@@ -18,19 +18,21 @@ export function MobileBottomNav({ currentPath }) {
       }}
     >
       
-      <BottomNavigationList>
+      <BottomNavigationList className="mobile-navigation">
 
         {navItems.map((item) => (
           <BottomNavigationItem
             key={item.url}
             value={item.url}
+            className="mobile-navigation-item"
+            data-nav-color={item.color}
           >
 
             <BottomNavigationItemIcon>
               <item.icon />
             </BottomNavigationItemIcon>
 
-            <BottomNavigationItemLabel>
+            <BottomNavigationItemLabel style={{ fontFamily: "BiotripCapsBold" }}>
               {item.title}
             </BottomNavigationItemLabel>
 

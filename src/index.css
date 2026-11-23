@@ -8,6 +8,12 @@
   src: url("./assets/fonts/Bellfast.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "BiotripCapsBold";
+  src: url("./assets/fonts/BiotripCapsBold.ttf") format("opentype");
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -131,7 +137,8 @@ body {
 #root {
   width: 100%;
   text-align: center;
-  min-height: 100svh;
+  height: 100dvh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

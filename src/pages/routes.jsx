@@ -192,19 +192,19 @@ export default function RoutesPage({ isPast = false }) {
     <div className="relative flex min-h-0 flex-1 flex-col">
       <section
         ref={scrollRegionRef}
-        className="info-page relative flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-6 scrollbar-none md:px-8 md:py-8"
+        className="info-page routes-page relative flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-6 scrollbar-none md:px-8 md:py-8"
         aria-labelledby="routes-title"
         tabIndex={0}
         onScroll={(event) => setShowBackToTop(event.currentTarget.scrollTop > 100)}
       >
-        <header className="flex shrink-0 flex-wrap items-end justify-between gap-4 text-left">
+        <header className="page-header flex shrink-0 flex-wrap items-end justify-between gap-4 text-left">
           <div className="space-y-1">
-            <h1 id="routes-title" className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{isPast ? "Past Routes" : "Routes"}</h1>
+            <h1 id="routes-title" className="m-0 text-3xl font-semibold tracking-tight text-foreground md:text-4xl" style={{ fontFamily: "BiotripCapsBold" }}>{isPast ? "Past Routes" : "Routes"}</h1>
             <p className="text-sm text-muted-foreground">
               {isPast ? "Explore previously removed routes." : "Explore the routes currently on the wall."}
             </p>
           </div>
-          <a className={buttonVariants({ variant: "outline", size: "lg" })} href={isPast ? "/routes" : "/routes/past"}>
+          <a className={buttonVariants({ variant: "outline", size: "lg", className: "route-page-link" })} href={isPast ? "/routes" : "/routes/past"}>
             {isPast ? "Active Routes" : "Past Routes"}
           </a>
         </header>

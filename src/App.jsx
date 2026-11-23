@@ -1,6 +1,7 @@
 import './App.css'
 import { AppSidebar } from "@/nav/app-sidebar"
 import { MobileBottomNav } from "@/nav/mobile-bottom-nav"
+import { navItems } from "@/nav/navigation"
 import HomePage from "@/pages/home"
 import RoutesPage from "@/pages/routes"
 import ClassesPage from "@/pages/classes"
@@ -37,14 +38,17 @@ function App() {
   }
 
   return (
-    <SidebarProvider className="h-dvh">
+    <SidebarProvider className="h-dvh min-h-0 overflow-hidden">
       <div className="hidden md:block">
         <AppSidebar />
       </div>
 
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col pb-[calc(var(--spacing)*14+env(safe-area-inset-bottom,0px))] md:pb-0">
+      <main
+        className="page-shell flex min-h-0 min-w-0 flex-1 flex-col pb-[calc(var(--spacing)*14+env(safe-area-inset-bottom,0px))] md:pb-0"
+        data-nav-color={navItems.find((item) => item.url === navigationPath)?.color}
+      >
         <div className="hidden shrink-0 items-center p-2 md:flex">
-          <SidebarTrigger />
+          <SidebarTrigger className="navigation-toggle" />
         </div>
 
         {page}
